@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Typing Game</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 100px;
+    background-color: #f5f5f5;
+  }
+
+  #container {
+    font-size: 32px;
+    letter-spacing: 3px;
+    margin: 20px;
+    padding: 20px;
+    border: 2px solid #333;
+    display: inline-block;
+    background: white;
+  }
+
+  #info {
+    margin-top: 20px;
+    font-size: 18px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>打字消消樂</h1>
+<div id="container"></div>
+
+<div id="info">
+  錯誤次數：<span id="errorCount">0</span>
+</div>
+
+<script>
+// 取得元素
+var container = document.getElementById('container');
+var errorDisplay = document.getElementById('errorCount');
+
+// 👉 產生亂數字串
+function add_new_chars(x, randomLength = true) {
+  let n = x;
+
+  if (randomLength) {
+    n = Math.floor(Math.random() * x) + 1;
+  }
+
+  let str = '';
+
+  for (let i = 0; i < n; i++) {
+    str += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+  }
+
+  return str;
+}
+
+// 👉 初始內容
+container.textContent = add_new_chars(3);
+
+let counter = 0; // 連續錯誤
+
+// 👉 鍵盤事件
+window.addEventListener("keyup", function(e) {
+
+  // 只接受 a~z
+  if (!/^[a-z]$/.test(e.key)) return;
+
+  let firstChar = container.textContent.substring(0, 1);
+
+  // ✅ 打對
+  if (e.key === firstChar) {
+    container.textContent = container.textContent.substring(1);
+  } 
+  // ❌ 打錯
+  else {
+    container.textContent += e.key;
+    counter++;
+    errorDisplay.textContent = counter;
+
+    // ⭐ 重點：連續錯 3 次
+    if (counter >= 3) {
+      // 原本增加
+      container.textContent += add_new_chars(6, false);
+
+      // 額外 +3（作業要求）
+      container.textContent += add_new_chars(3, false);
+
+      counter = 0;
+      errorDisplay.textContent = counter;
+    }
+  }
+
+  // 👉 每次補新字
+  container.textContent += add_new_chars(3);
+
+});
+</script>
+
+</body>
+</html>
